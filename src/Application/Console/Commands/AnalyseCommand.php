@@ -75,6 +75,14 @@ final class AnalyseCommand
             $hasError = true;
         }
 
+        if (
+            $this->configuration->getMaxMethodComplexity() 
+            && $this->configuration->getMaxMethodComplexity() < $results->getMaxMethodsComplexity()
+        ){
+            $consoleStyle->error('Some methods are too complex');
+            $hasError = true;
+        }
+
         if ($this->configuration->getMinArchitecture() > $results->getStructure()) {
             $consoleStyle->error('The architecture score is too low');
             $hasError = true;

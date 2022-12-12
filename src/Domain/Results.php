@@ -59,6 +59,22 @@ final class Results
     }
 
     /**
+     * Gets the methods complexity.
+     */
+    public function getMethodsComplexity(): array
+    {
+        return $this->collector->getMethodsComplexity();
+    }
+
+    /**
+     * Gets the methods complexity.
+     */
+    public function getMaxMethodsComplexity(): int
+    {
+        return max($this->collector->getMethodsComplexity());
+    }
+
+    /**
      * Gets the code quality.
      */
     public function getStructure(): float

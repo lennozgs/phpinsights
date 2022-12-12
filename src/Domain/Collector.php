@@ -71,7 +71,7 @@ final class Collector
     /**
      * @var array<int>
      */
-    private array $methodComplexity = [];
+    public array $methodComplexity = [];
 
     /**
      * @var array<string, float>
@@ -489,6 +489,12 @@ final class Collector
     public function getMethodComplexity(): int
     {
         return $this->totalMethodComplexity;
+    }
+
+    public function getMethodsComplexity(): array
+    {
+        // $this->methodComplexity[$this->currentFilename . ':' . $methodName]
+        return $this->methodComplexity;
     }
 
     public function getClassConstants(): int

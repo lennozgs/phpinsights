@@ -37,6 +37,7 @@ final class Configuration
     private const ACCEPTED_REQUIREMENTS = [
         'min-quality',
         'min-complexity',
+        'max-method-complexity',
         'min-architecture',
         'min-style',
         'disable-security-check',
@@ -202,6 +203,11 @@ final class Configuration
     public function getMinComplexity(): float
     {
         return (float) ($this->requirements['min-complexity'] ?? 0);
+    }
+
+    public function getMaxMethodComplexity(): int
+    {
+        return (int) ($this->requirements['max-method-complexity'] ?? 0);
     }
 
     public function getMinArchitecture(): float

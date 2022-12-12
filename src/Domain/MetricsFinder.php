@@ -18,6 +18,7 @@ use NunoMaduro\PhpInsights\Domain\Metrics\Code\Comments as Code_Comments;
 use NunoMaduro\PhpInsights\Domain\Metrics\Code\Functions as Code_Functions;
 use NunoMaduro\PhpInsights\Domain\Metrics\Code\Globally as Code_Globally;
 use NunoMaduro\PhpInsights\Domain\Metrics\Complexity\Complexity as Complexity_Complexity;
+use NunoMaduro\PhpInsights\Domain\Metrics\Complexity\MethodComplexity as Method_Complexity;
 use NunoMaduro\PhpInsights\Domain\Metrics\Security\Security as Security_Security;
 use NunoMaduro\PhpInsights\Domain\Metrics\Style\Style as Style_Style;
 
@@ -38,6 +39,7 @@ final class MetricsFinder
             Code_Functions::class,
             Code_Globally::class,
             Complexity_Complexity::class,
+            Method_Complexity::class,
             Architecture_Classes::class,
             Architecture_Constants::class,
             Architecture_Files::class,
