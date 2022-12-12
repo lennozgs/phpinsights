@@ -32,6 +32,13 @@ final class AnalyseDefinition extends BaseDefinition
                 '0'
             ),
             new InputOption(
+                'max-method-complexity',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Maximal method Complexity level to reach without throw error',
+                '0'
+            ),
+            new InputOption(
                 'min-architecture',
                 null,
                 InputOption::VALUE_OPTIONAL,

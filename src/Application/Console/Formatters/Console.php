@@ -61,6 +61,12 @@ final class Console implements Formatter
     <%complexity_color%>%block_size%</>
     EOD;
 
+    private const METHOD_COMPLEXITY = <<<EOD
+    <%method_complexity_color%>%block_size%</>
+    <fg=white;options=bold;%method_complexity_color%>  %method_complexity%  </>
+    <%method_complexity_color%>%block_size%</>
+    EOD;
+
     private const STRUCTURE = <<<EOD
     <%structure_color%>%block_size%</>
     <fg=white;options=bold;%structure_color%>  %structure%  </>
@@ -76,6 +82,7 @@ final class Console implements Formatter
     private const CATEGORY_COLOR = [
         'Code' => 'cyan',
         'Complexity' => 'green',
+        'MethodComplexity' => 'green',
         'Architecture' => 'blue',
         'Style' => 'yellow',
         'Security' => 'red',
@@ -135,6 +142,7 @@ final class Console implements Formatter
         $this->summary($results, $insightCollection->getCollector()->getAnalysedPaths())
             ->code($insightCollection, $results)
             ->complexity($insightCollection, $results)
+            ->methodcomplexity($insightCollection, $results)
             ->architecture($insightCollection, $results)
             ->miscellaneous($results);
 
@@ -250,6 +258,8 @@ final class Console implements Formatter
             '%quality_color%' => "bg={$this->getColor($results->getCodeQuality())}",
             '%complexity%' => self::getPercentageAsString($results->getComplexity()),
             '%complexity_color%' => "bg={$this->getColor($results->getComplexity())}",
+            '%method_complexity%' => self::getMaxMethodComplexityAsString($results->getMaxMethodsComplexity()),
+            '%method_complexity_color%' => "bg={$this->getMaxComplexityColor($results->getMaxMethodsComplexity())}",
             '%structure%' => self::getPercentageAsString($results->getStructure()),
             '%structure_color%' => "bg={$this->getColor($results->getStructure())}",
             '%style%' => self::getPercentageAsString($results->getStyle()),
@@ -300,6 +310,31 @@ final class Console implements Formatter
             "<fg={$this->getColor($results->getComplexity())};options=bold>{$results->getComplexity()} pts</>",
             (new Complexity())->getAvg($insightCollection->getCollector())
         ));
+
+        return $this;
+    }
+
+    /**
+     * Outputs the complexity errors according to the format.
+     */
+    private function methodComplexity(InsightCollection $insightCollection, Results $results): self
+    {
+        $this->style->newLine();
+
+        $this->style->writeln(sprintf(
+            '[METHOD_COMPLEXITY] Maximum method Cyclomatic Complexity is %s.',
+            "<fg={$this->getMaxComplexityColor($results->getMaxMethodsComplexity())};options=bold>{$results->getMaxMethodsComplexity()} pts</>",
+            ($this->config->getMaxMethodComplexity())
+        ));
+
+        if ($this->config->getMaxMethodComplexity()) {
+            $this->style->writeln(
+                sprintf(
+                    ' - The configured cyclomatic complexity threshold is <options=bold>%s pts</>.',
+                    ($this->config->getMaxMethodComplexity())
+                )
+            );
+        }
 
         return $this;
     }
@@ -448,6 +483,16 @@ final class Console implements Formatter
     }
 
     /**
+     * Returns boolean as 5 chars string.
+     */
+    private static function getMaxMethodComplexityAsString(int $maxMethodComplexity): string
+    {
+
+        $str = sprintf('%spts', $maxMethodComplexity);
+        return str_pad($str, 5);
+    }
+
+    /**
      * Returns the color for the given percentage.
      */
     private function getColor(float $percentage): string
@@ -457,6 +502,22 @@ final class Console implements Formatter
         }
 
         if ($percentage >= 50) {
+            return 'yellow';
+        }
+
+        return 'red';
+    }
+
+    /**
+     * Returns the color for the given percentage.
+     */
+    private function getMaxComplexityColor(int $maxComplexity): string
+    {
+        if ($maxComplexity < $this->config->getMaxMethodComplexity()) {
+            return 'green';
+        }
+
+        if ($maxComplexity == $this->config->getMaxMethodComplexity()) {
             return 'yellow';
         }
 
@@ -524,6 +585,7 @@ final class Console implements Formatter
                 [
                     strtr(self::QUALITY, $templates),
                     strtr(self::COMPLEXITY, $templates),
+                    strtr(self::METHOD_COMPLEXITY, $templates),
                     strtr(self::STRUCTURE, $templates),
                     strtr(self::STYLE, $templates),
                 ],
@@ -531,6 +593,7 @@ final class Console implements Formatter
                 [
                     strtr('<%subtitle%>Code</>', $templates),
                     strtr('<%subtitle%> Complexity</>', $templates),
+                    strtr('<%subtitle%> Max Method Complexity</>', $templates),
                     strtr('<%subtitle%> Architecture</>', $templates),
                     strtr('<%subtitle%>Style</>', $templates),
                 ],
