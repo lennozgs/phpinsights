@@ -513,7 +513,10 @@ final class Console implements Formatter
      */
     private function getMaxComplexityColor(int $maxComplexity): string
     {
-        if ($maxComplexity < $this->config->getMaxMethodComplexity()) {
+        if (
+            ! $this->config->getMaxMethodComplexity()
+            || $maxComplexity < $this->config->getMaxMethodComplexity()
+        ) {
             return 'green';
         }
 
